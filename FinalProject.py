@@ -20,8 +20,9 @@ file = input("Enter the file: ")
 file = "nyc_crash.csv"
 
 read = pd.read_csv(file)
-print(f"This data set has {df.shape[0]} rows.")
+print(f"This data set has {read.shape[0]} rows.")
 size = int(input("Enter the number of records to sample: "))
 sample = read.sample(n=size)
 print(f"The sample data set has {sample.shape[0]} rows.")
 print(read)
+print("HI")
