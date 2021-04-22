@@ -13,7 +13,8 @@ Add/drop/select/create new/group columns, frequency count, other features as you
 """
 import pandas as pd
 import matplotlib.pyplot as plt
-
+import numpy as np
+import streamlit as st
 
 file = "nyc_crash.csv"
 
@@ -38,6 +39,7 @@ while True:
 sample = read.sample(n=size)
 print(f"The sample data set has {sample.shape[0]} rows.")
 print(read)
+
 
 vehicle_type = ["Ambulance", "Bicycle", "Bus", "Fire Truck", "Large Com Veh(6 or more tires)",
                 "Livery vehicle", "Motorcycle", "Other", "Passenger vehicle", "Pick-up truck",
