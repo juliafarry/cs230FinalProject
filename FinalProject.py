@@ -4,14 +4,12 @@ At least one function that does not return a value
 Interacting with dictionaries, lists, and tuples
 Using a Python module to calculate a statistical function such as average, median, mode, etc.
 User Interface and dashboard with Streamlit.io
-
 at least 3 pandas capabilities:
 Sorting data in ascending or descending order, multi-column sorting
 Filtering data by one or more conditions
 Analyzing data with pivot tables
 Managing rows or columns
 Add/drop/select/create new/group columns, frequency count, other features as you wish
-
 """
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -40,3 +38,9 @@ while True:
 sample = read.sample(n=size)
 print(f"The sample data set has {sample.shape[0]} rows.")
 print(read)
+
+vehicle_type = ["Ambulance", "Bicycle", "Bus", "Fire Truck", "Large Com Veh(6 or more tires)",
+                "Livery vehicle", "Motorcycle", "Other", "Passenger vehicle", "Pick-up truck",
+                "Small com veh(4 tires)", "Sports utility/station wagon" ,"Taxi", "Unkown", "Van"]
+
+borough = ["Bronx", "Brooklyn", "Manhattan", "Queens", "Staten Island"]
