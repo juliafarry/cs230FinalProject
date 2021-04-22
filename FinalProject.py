@@ -13,3 +13,11 @@ Managing rows or columns
 Add/drop/select/create new/group columns, frequency count, other features as you wish
 
 """
+import pandas as pd
+import matplotlib.pyplot as plt
+
+file = input("Enter the file: ")
+file = "nyc_crash.csv"
+
+read = pd.read_csv(file)
+print(f"This data set has {df.shape[0]} rows.")
