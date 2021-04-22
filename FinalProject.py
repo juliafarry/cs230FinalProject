@@ -16,7 +16,7 @@ Add/drop/select/create new/group columns, frequency count, other features as you
 import pandas as pd
 import matplotlib.pyplot as plt
 
-file = input("Enter the file: ")
+
 file = "nyc_crash.csv"
 
 def default_input(prompt, default_value):
@@ -26,8 +26,17 @@ def default_input(prompt, default_value):
     return item
 
 read = pd.read_csv(file)
+
 print(f"This data set has {read.shape[0]} rows.")
-size = int(input("Enter the number of records to sample: "))
+size = default_input("Enter number of records to sample: ", "1000")
+while True:
+    try:
+        size = int(size)
+        break
+    except:
+        size = default_input("Please enter an integer: ", "1000")
+
+
 sample = read.sample(n=size)
 print(f"The sample data set has {sample.shape[0]} rows.")
 print(read)
