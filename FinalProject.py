@@ -21,3 +21,4 @@ file = "nyc_crash.csv"
 
 read = pd.read_csv(file)
 print(f"This data set has {df.shape[0]} rows.")
+print("hello")
