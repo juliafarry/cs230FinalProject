@@ -18,15 +18,17 @@ import streamlit as st
 
 file = "nyc_crash.csv"
 
+
 def default_input(prompt, default_value):
     item = input(prompt + "[enter for " + default_value + "]: ").lower()
     if item == "":
         item = default_value
     return item
 
-read = pd.read_csv(file)
 
-print(f"This data set has {read.shape[0]} rows.")
+df = pd.read_csv(file)
+
+print(f"This data set has {df.shape[0]} rows.")
 size = default_input("Enter number of records to sample: ", "1000")
 while True:
     try:
@@ -36,9 +38,9 @@ while True:
         size = default_input("Please enter an integer: ", "1000")
 
 
-sample = read.sample(n=size)
+sample = df.sample(n=size)
 print(f"The sample data set has {sample.shape[0]} rows.")
-print(read)
+print(df)
 
 
 vehicle_type = ["Ambulance", "Bicycle", "Bus", "Fire Truck", "Large Com Veh(6 or more tires)",
@@ -46,3 +48,7 @@ vehicle_type = ["Ambulance", "Bicycle", "Bus", "Fire Truck", "Large Com Veh(6 or
                 "Small com veh(4 tires)", "Sports utility/station wagon" ,"Taxi", "Unkown", "Van"]
 
 borough = ["Bronx", "Brooklyn", "Manhattan", "Queens", "Staten Island"]
+
+
+pd.pivot_table(df,index=["Date", "Borough"], values=["Persons Injured"], aggfunc=[np.sum], fill_value=0)
+
