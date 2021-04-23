@@ -50,5 +50,16 @@ vehicle_type = ["Ambulance", "Bicycle", "Bus", "Fire Truck", "Large Com Veh(6 or
 borough = ["Bronx", "Brooklyn", "Manhattan", "Queens", "Staten Island"]
 
 
-pd.pivot_table(df,index=["Date", "Borough"], values=["Persons Injured"], aggfunc=[np.sum], fill_value=0)
+pd.pivot_table(df, index=["Date", "Borough"], values=["Persons Injured"], aggfunc=[np.sum], fill_value=0)
 
+
+# Function adds a title to the project and returns no value
+def title():
+    st.title("NYC Vehicle Crash Data")
+
+
+def main():
+    title()
+
+
+main()
