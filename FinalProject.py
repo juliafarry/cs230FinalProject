@@ -42,15 +42,43 @@ sample = df.sample(n=size)
 print(f"The sample data set has {sample.shape[0]} rows.")
 print(df)
 
-
+# list of all vehicle types that were apart of a crash
 vehicle_type = ["Ambulance", "Bicycle", "Bus", "Fire Truck", "Large Com Veh(6 or more tires)",
                 "Livery vehicle", "Motorcycle", "Other", "Passenger vehicle", "Pick-up truck",
                 "Small com veh(4 tires)", "Sports utility/station wagon" ,"Taxi", "Unkown", "Van"]
 
+# list of all boroughs
 borough = ["Bronx", "Brooklyn", "Manhattan", "Queens", "Staten Island"]
 
+# pivot table that will compare the average people injured from each borough
+pd.pivot_table(df, index=["Borough"], values=["Persons Injured"], aggfunc=[np.average], fill_value=0)
 
-pd.pivot_table(df, index=["Date", "Borough"], values=["Persons Injured"], aggfunc=[np.sum], fill_value=0)
+
+# histogram to see the number of crashes within a time frame
+def crashes():
+    st.markdown("### **Interactive Histogram**")
+    st.sidebar.markdown("#### **Please select your upper and lower bound hour**")
+    time_min = st.sidebar.slider("Lower Bound Hour:", 0, 0, 24, 1)
+    time_max = st.sidebar.slider("Upper Bound Hour:", 0, 0, 24, 1)
+    hourdf = file[(file.time >= time_min) & (file.time <= time_max)]
+    count = hourdf['unique key'].count()
+    max = file['unique key'].count()
+    # pct = "Percentage of Crashes Between the Hours " + str(time_min) + " and " + str(time_max) + ": " + str(round(count/max * 100, 2)) + "%"
+    percentage = str(round(count/max * 100, 2))
+    hist_title = f"Percentage of Crashes Between the Hours {time_min} and {time_max}: {percentage}%"
+    rist = file['time'].tolist()
+    arr = np.array(rist)
+    num = 24
+    bins = list(range(num + 1))
+    fig, ax = plt.subplots()
+    N, bins, patches = ax.hist(arr, bins=bins, color='firebrick', EdgeColor='black')
+    for i in range(time_min, time_max):
+        patches[i].set_facecolor('midnightblue')
+    plt.xlim(-1, 25)
+    plt.xlabel("Hour of the Day")
+    plt.ylabel("Number of Crashes")
+    plt.title(hist_title)
+    st.pyplot(fig)
 
 
 # Function adds a title to the project and returns no value
