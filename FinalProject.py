@@ -26,7 +26,8 @@ def default_input(prompt, default_value):
     return item
 
 
-df = pd.read_csv(file)
+df = pd.read_csv(file).lower()
+# not sure about the .lower() but we need to make all the info not capitalized
 
 print(f"This data set has {df.shape[0]} rows.")
 size = default_input("Enter number of records to sample: ", "1000")
@@ -43,12 +44,12 @@ print(f"The sample data set has {sample.shape[0]} rows.")
 print(df)
 
 # list of all vehicle types that were apart of a crash
-vehicle_type = ["Ambulance", "Bicycle", "Bus", "Fire Truck", "Large Com Veh(6 or more tires)",
-                "Livery vehicle", "Motorcycle", "Other", "Passenger vehicle", "Pick-up truck",
-                "Small com veh(4 tires)", "Sports utility/station wagon" ,"Taxi", "Unkown", "Van"]
+vehicle_type = ["ambulance", "bicycle", "bus", "fire truck", "large com veh(6 or more tires)",
+                "livery vehicle", "motorcycle", "other", "passenger vehicle", "pick-up truck",
+                "small com veh(4 tires)", "sports utility/station wagon", "taxi", "unkown", "van"]
 
 # list of all boroughs
-borough = ["Bronx", "Brooklyn", "Manhattan", "Queens", "Staten Island"]
+borough = ["bronx", "brooklyn", "manhattan", "queens", "staten island"]
 
 # pivot table that will compare the average people injured from each borough
 pd.pivot_table(df, index=["Borough"], values=["Persons Injured"], aggfunc=[np.average], fill_value=0)
