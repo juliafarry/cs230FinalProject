@@ -26,8 +26,7 @@ def default_input(prompt, default_value):
     return item
 
 
-df = pd.read_csv(file).lower()
-# not sure about the .lower() but we need to make all the info not capitalized
+df = pd.read_csv(file)
 
 print(f"This data set has {df.shape[0]} rows.")
 size = default_input("Enter number of records to sample: ", "1000")
@@ -52,7 +51,7 @@ vehicle_type = ["ambulance", "bicycle", "bus", "fire truck", "large com veh(6 or
 borough = ["bronx", "brooklyn", "manhattan", "queens", "staten island"]
 
 # pivot table that will compare the average people injured from each borough
-pd.pivot_table(df, index=["Borough"], values=["Persons Injured"], aggfunc=[np.average], fill_value=0)
+pd.pivot_table(df, index=["BOROUGH"], values=["PERSONS INJURED"], aggfunc=[np.average], fill_value=0)
 
 
 # histogram to see the number of crashes within a time frame
@@ -95,3 +94,5 @@ def main():
 
 
 main()
+
+# streamlit run C:/Users/Julia Farry/PycharmProjects/cs230FinalProject/FinalProject.py
