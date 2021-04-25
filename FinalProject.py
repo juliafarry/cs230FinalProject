@@ -55,7 +55,7 @@ pd.pivot_table(df, index=["Borough"], values=["Persons Injured"], aggfunc=[np.av
 
 
 # histogram to see the number of crashes within a time frame
-def crashes():
+def histogram():
     st.markdown("### **Interactive Histogram**")
     st.sidebar.markdown("#### **Please select your upper and lower bound hour**")
     time_min = st.sidebar.slider("Lower Bound Hour:", 0, 0, 24, 1)
@@ -79,6 +79,9 @@ def crashes():
     plt.ylabel("Number of Crashes")
     plt.title(hist_title)
     st.pyplot(fig)
+
+# chart looking at the number of people injured
+# pie chart counting the type of vehicle or borough
 
 
 # Function adds a title to the project and returns no value
