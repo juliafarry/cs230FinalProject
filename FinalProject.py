@@ -46,9 +46,11 @@ print(df)
 vehicle_type = ["ambulance", "bicycle", "bus", "fire truck", "large com veh(6 or more tires)",
                 "livery vehicle", "motorcycle", "other", "passenger vehicle", "pick-up truck",
                 "small com veh(4 tires)", "sports utility/station wagon", "taxi", "unkown", "van"]
+vehicle_type.upper()
 
 # list of all boroughs
 borough = ["bronx", "brooklyn", "manhattan", "queens", "staten island"]
+borough.upper()
 
 # pivot table that will compare the average people injured from each borough
 pd.pivot_table(df, index=["BOROUGH"], values=["PERSONS INJURED"], aggfunc=[np.average], fill_value=0)
