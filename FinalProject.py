@@ -78,7 +78,6 @@ def histogram():
     hourdf = file[(file.time >= time_min) & (file.time <= time_max)]
     count = hourdf['unique key'].count()
     max = file['unique key'].count()
-    # pct = "Percentage of Crashes Between the Hours " + str(time_min) + " and " + str(time_max) + ": " + str(round(count/max * 100, 2)) + "%"
     percentage = str(round(count/max * 100, 2))
     hist_title = f"Percentage of Crashes Between the Hours {time_min} and {time_max}: {percentage}%"
     rist = file['time'].tolist()
