@@ -26,6 +26,7 @@ def default_input(prompt, default_value):
 
 
 df = pd.read_csv(file)
+df = df.fillna(0)
 
 print(f"This data set has {df.shape[0]} rows.")
 size = default_input("Enter number of records to sample: ", "1000")
