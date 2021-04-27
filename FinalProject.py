@@ -63,6 +63,7 @@ vehicle_factor = ["ACCELERATOR DEFECTIVE" "AGGRESSIVE DRIVING/ROAD RAGE", "ALCOH
                   "TRAFFIC CONTROL DEVICE IMPROPER/NON-WORKING", "TRAFFIC CONTROL DEVICE IMPROPER/NON-WORKING",
                   "TURNING IMPROPERLY","UNSAFE LANE CHANGING", "UNSAFE SPEED", "UNSPECIFIED", "VIEW OBSTRUCTED/LIMITED",
                   ]
+vehicle_factor.lower()
 
 # pivot table that will compare the average people injured from each borough
 pd.pivot_table(df, index=["BOROUGH"], values=["PERSONS INJURED"], aggfunc=[np.average], fill_value=0)
