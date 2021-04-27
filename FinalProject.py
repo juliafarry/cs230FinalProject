@@ -95,8 +95,7 @@ def histogram():
     plt.title(hist_title)
     st.pyplot(fig)
 
-# chart looking at the number of people injured
-# pie chart counting the type of vehicle or borough
+# pie chart counting the type of vehicle and average people killed
 
 
 # Function adds a title to the project and returns no value
