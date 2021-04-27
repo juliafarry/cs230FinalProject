@@ -59,7 +59,7 @@ pd.pivot_table(df, index=["BOROUGH"], values=["PERSONS INJURED"], aggfunc=[np.av
 # histogram to see the number of crashes within a time frame
 def histogram():
     st.markdown("### **Interactive Histogram**")
-    st.sidebar.markdown("#### **Please select your upper and lower bound hour**")
+    st.sidebar.markdown("#### **Please select your upper and lower bound hours**")
     time_min = st.sidebar.slider("Lower Bound Hour:", 0, 0, 24, 1)
     time_max = st.sidebar.slider("Upper Bound Hour:", 0, 0, 24, 1)
     hourdf = file[(file.time >= time_min) & (file.time <= time_max)]
