@@ -51,7 +51,7 @@ vehicle_type.upper()
 borough = ["bronx", "brooklyn", "manhattan", "queens", "staten island"]
 borough.upper()
 
-# list of all potential factors that could have caused the vehicles to crash
+# list of all potential factors that could have caused the vehicle to crash
 vehicle_factor = ["ACCELERATOR DEFECTIVE" "AGGRESSIVE DRIVING/ROAD RAGE", "ALCOHOL INVOLVEMENT", "ANIMALS ACTION",
                   "BACKING UNSAFELY", "BRAKES DEFECTIVE", "CELL PHONE (HAND-HELD)", "DRIVER INATTENTION/DISTRACTION",
                   "DRIVER INEXPERIENCE", "DRUGS (ILLEGAL)", "FAILURE TO KEEP RIGHT", "FAILURE TO YIELD RIGHT-OF-WAY",
