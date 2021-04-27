@@ -1,6 +1,5 @@
 """
 At least one function that has two parameters and returns a value
-At least one function that does not return a value
 Interacting with dictionaries, lists, and tuples
 Using a Python module to calculate a statistical function such as average, median, mode, etc.
 User Interface and dashboard with Streamlit.io
@@ -79,7 +78,7 @@ def histogram():
     count = hourdf['unique key'].count()
     max = file['unique key'].count()
     percentage = str(round(count/max * 100, 2))
-    hist_title = f"Percentage of Crashes Between the Hours {time_min} and {time_max}: {percentage}%"
+    hist_title = f"Percentage of Crashes Between the Hours {time_min} and {time_max} ({percentage}%)"
     rist = file['time'].tolist()
     arr = np.array(rist)
     num = 24
