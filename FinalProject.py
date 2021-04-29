@@ -72,13 +72,13 @@ def pie_chart(data):
 
 def histogram_test(data):
     global MONTHS
+    st.markdown("### **Interactive Histogram**")
     hist_data = pd.DataFrame()
     month_list = list(MONTHS.values())
     month_nums = list(MONTHS.keys())
     month = st.selectbox('Select Month', month_list)
     position = month_list.index(month)
     num = month_nums[position]
-    st.markdown("### **Interactive Histogram**")
     hist_data = data[data['datetime'] == num]
     hist_title = f"Time of Day Histogram for the month of {month}"
     rist = hist_data['datetimetime'].dt.hour.tolist()
