@@ -106,7 +106,13 @@ def histogram_test(data):
 
 
 def map(data):
-    st.bar_chart(np.histogram(hist_data[hist_data['datetime'].dt.hour], bins=24, range=(0,24))[0])
+    month_list = list(MONTHS.values())
+    month_nums = list(MONTHS.keys())
+    month = st.selectbox('Select Month', month_list)
+    position = month_list.index(month)
+    num = month_nums[position] - 1
+    map_data = data[data['datetime'].dt.month == num]
+    st.bar_chart(np.histogram(map_data[map_data['datetime'].dt.hour], bins=24, range=(0,24))[0])
     view_state = pdk.ViewState(latitude = 40.7128, longitude = 74.0060)
     map = pdk.Deck(initial_view_state=view_state)
     st.pydeck_chart(map)
