@@ -17,6 +17,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import streamlit as st
+import pydeck as pdk
 
 FILE = "nyc_crash.csv"
 
@@ -49,7 +50,6 @@ def load_data(file):
     print(sample['datetime'])
     sample['datetimetime'] = pd.to_datetime(sample['time'])
     print(f"The sample data set has {sample.shape[0]} rows.")
-    # print(sample)
     print(sample.info())
     return sample
 
@@ -76,8 +76,6 @@ vehicle_factor = ["ACCELERATOR DEFECTIVE" "AGGRESSIVE DRIVING/ROAD RAGE", "ALCOH
                   ]
 
 
-# pivot table that will compare the average people injured from each borough
-
 def histogram_test(data):
     global MONTHS
     month_list = list(MONTHS.values())
@@ -100,6 +98,13 @@ def histogram_test(data):
     plt.ylabel("Number of Crashes")
     plt.title(hist_title)
     st.bar_chart(np.histogram(hist_data['datetimetime'].dt.hour, bins=24, range=(0,24))[0])
+
+
+def map():
+    st.bar_chart(np.histogram(hist_data[hist_data['datetime'].dt.hour], bins=24, range=(0,24))[0])
+    view_state = pdk.ViewState(latitude = 40.7128, longitude = 74.0060)
+    map = pdk.Deck(initial_view_state=view_state)
+    st.pydeck_chart(map)
     # st.pyplot(fig)
     print("hello")
 
@@ -157,6 +162,11 @@ def title():
     st.title("NYC Vehicle Crash Data")
 
 
+sidebar_title = st.sidebar.title("Selector")
+visualization = st.sidebar.selectbox("Select a chart type:", ("Bar Chart", "Pie Chart", "Histogram"))
+injuries = st.sidebar.radio("Person's affected", ("Injured", "Killed"))
+
+
 def main():
     title()
     df = load_data(FILE)
@@ -166,7 +176,6 @@ def main():
     # pd.pivot_table(df, index=["BOROUGH"], values=["PERSONS INJURED"], aggfunc=[np.average], fill_value=0)
     st.map(df)
 
+
 main()
 
-# streamlit run C:/Users/Julia Farry/PycharmProjects/cs230FinalProject/FinalProject.py
-# streamlit run C:/Users/baxte/Documents/Sophomore Year/Spring/CS 230/cs230FinalProject/FinalProject.py
