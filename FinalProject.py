@@ -59,17 +59,18 @@ def bar(data):
     stuff = pd.pivot_table(data, index=["borough"], values=["persons injured"], aggfunc=[np.average], fill_value=0)
     st.write(stuff)
     st.subheader("**Bar Chart of Average People Injured in Vehicles From Each Borough**")
-    hours = data['datetimetime'].dt.hour
-    st.slider(hours)
     boroughs = ['bronx', 'brooklyn','manhattan', 'queens', 'staten island']
 
-
+    st.bar_chart(boroughs)
 
 
 # line chart of the number of vehicles involved in the crash
 def line_chart(data):
     st.subheader("**Line Chart of Vehicles Involved**")
-    st.line_chart(data)
+    vehicles_involved = 0
+    for i in range(len(data)):
+        pass
+    st.line_chart(data['persons injured'])
 
     pass
 
@@ -139,7 +140,7 @@ def main():
     if st.checkbox('View Raw Data?'):
         st.write(df)
     st.sidebar.title("Selector")
-    visualization = st.sidebar.selectbox("Select a chart type:", ("Select One", "Bar Chart", "Histogram", "Line Chart", "Map"))
+    visualization = st.sidebar.selectbox("Select a chart type:", ("Select a Chart", "Bar Chart", "Histogram", "Line Chart", "Map"))
     if visualization == "Bar Chart":
         bar(df)
     elif visualization == "Line Chart":
@@ -152,7 +153,7 @@ def main():
         histogram_test(df)
         st.map(df)
         bar(df)
-        line_chart(df['persons injured'])
+        # line_chart(df)
 
 
 main()
