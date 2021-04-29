@@ -1,16 +1,12 @@
 """
-At least one function that has two parameters and returns a value
-At least one function that does not return a value
-Interacting with dictionaries, lists, and tuples
-Using a Python module to calculate a statistical function such as average, median, mode, etc.
-User Interface and dashboard with Streamlit.io
-
-at least 3 pandas capabilities:
-Sorting data in ascending or descending order, multi-column sorting
-Filtering data by one or more conditions
-Analyzing data with pivot tables
-Managing rows or columns
-Add/drop/select/create new/group columns, frequency count, other features as you wish
+CS230-SN6
+Baxter Bishop and Julia Farry
+data set = nyc_crash
+description:
+This program displays a wide variety of options of viewing New York City crash data.
+Using various functions, we have created charts to display all crash locations on a map, a pivot table and bar chart
+showing the number of injured people in crashes, and an interactive histogram to look at crash times each month.
+We have also included a sidebar to make viewing the charts easier, as you can view each one individually.
 """
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -43,23 +39,25 @@ def load_data(file):
     lower_case = lambda x: str(x).lower()
     df.rename(lower_case, axis='columns', inplace=True)
     df = df.fillna(0)
+    print(f"This data set has {df.shape[0]} rows.")
     sample = df.sample(n=1000)
     sample['datetime'] = pd.to_datetime(sample['date'])
     sample['datetime'] = sample['datetime'].dt.month
     sample['datetime'] = pd.to_numeric(sample['datetime'])
     sample['datetimetime'] = pd.to_datetime(sample['time'])
+    print(f"The sample data set has {sample.shape[0]} rows.")
+    print(sample.info())
     return sample
 
 
 # bar chart taking the average people injured in each borough based on the pivot table
 def bar(data):
     dict = {}
-    plt.
     st.subheader("**Pivot Table of Average Injuries**")
     piv = pd.pivot_table(data, index=["borough"], values=["persons injured"], aggfunc=[np.average], fill_value=0)
     data = data[data['persons injured'] != 0]
     st.write(piv)
-    st.subheader("**Bar Chart of Average People Injured in Vehicles From Each Borough**")
+    st.subheader("**Bar Chart of People Injured in Vehicles From Each Borough**")
     boroughs = ['BRONX', 'BROOKLYN','MANHATTAN', 'QUEENS', 'STATEN ISLAND']
     # st.bar_chart(boroughs, index=boroughs)
     print(type(data[data['borough'] == 'BRONX']))
@@ -69,16 +67,6 @@ def bar(data):
     print(dict)
     plt.bar(range(len(dict)), dict.values(), align='center')
     st.pyplot()
-
-# line chart of the number of vehicles involved in the crash
-def line_chart(data):
-    st.subheader("**Line Chart of Vehicles Involved**")
-    vehicles_involved = 0
-    for i in range(len(data)):
-        pass
-    st.line_chart(data['persons injured'])
-
-    pass
 
 
 # histogram examining the average time of day crashes occur each month over the years
@@ -105,8 +93,6 @@ def histogram_test(data):
     ax.set_xticks(np.arange(24))
     plt.title(hist_title)
     st.pyplot(fig)
-    # hist = np.histogram(hist_data['datetimetime'].dt.hour, bins=24, range=(0,24))[0]
-    # st.bar_chart(np.histogram(hist_data['datetimetime'].dt.hour, bins=24, range=(0,24))[0])
 
 
 def map(data):
@@ -121,8 +107,6 @@ def map(data):
     st.pydeck_chart(nyc_map)
 
 
-
-
 # Function adds a title to the project and returns no value
 def title():
     st.title("NYC Vehicle Crash Data")
@@ -131,32 +115,20 @@ def title():
 def main():
     title()
     df = load_data(FILE)
-    if st.checkbox('View Raw Data?'):
-        st.write(df)
     st.sidebar.title("Selector")
-    visualization = st.sidebar.selectbox("Select a chart type:", ("Select a Chart", "Bar Chart", "Histogram", "Line Chart", "Map"))
+    visualization = st.sidebar.selectbox("Select a chart type:", ("Select a Chart", "Bar Chart", "Histogram", "Map"))
     if visualization == "Bar Chart":
         bar(df)
-    elif visualization == "Line Chart":
-        line_chart(df)
     elif visualization == "Histogram":
         histogram_test(df)
     elif visualization == "Map":
         st.map(df)
     else:
+        if st.checkbox('View Raw Data?'):
+            st.write(df)
         histogram_test(df)
         st.map(df)
         bar(df)
-        # line_chart(df)
-    """histogram_test(df)
-    borough_piv = pd.pivot_table(df, index=["borough"], values=["persons injured"], aggfunc=[np.average], fill_value=0)
-    # map(df)
-    # st.map(df)
-    st.write(borough_piv)
-    testy = df.loc[[]]
-    print(testy)
-    # bar(df)
-    # line_chart(df)"""
 
 
 main()
