@@ -1,58 +1,72 @@
 """
 At least one function that has two parameters and returns a value
+At least one function that does not return a value
 Interacting with dictionaries, lists, and tuples
 Using a Python module to calculate a statistical function such as average, median, mode, etc.
 User Interface and dashboard with Streamlit.io
+
 at least 3 pandas capabilities:
 Sorting data in ascending or descending order, multi-column sorting
 Filtering data by one or more conditions
 Analyzing data with pivot tables
 Managing rows or columns
 Add/drop/select/create new/group columns, frequency count, other features as you wish
+
 """
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import streamlit as st
 
-file = "nyc_crash.csv"
+FILE = "nyc_crash.csv"
+
+MONTHS = {1: 'January', 2: 'February', 3: 'March', 4: 'April',
+          5: 'May', 6: 'June', 7: 'July', 8: 'August',
+          9: 'September', 10: 'October', 11: 'November', 12: 'December'}
 
 
 def default_input(prompt, default_value):
-    item = input(prompt + "[enter for " + default_value + "]: ").lower()
+    item = input(prompt + "[enter for " + default_value + "]: ")
+    try:
+        item = item.lower()
+    except:
+        print("")
     if item == "":
         item = default_value
     return item
 
 
-df = pd.read_csv(file)
-df = df.fillna(0)
+@st.cache(suppress_st_warning=True)
+def load_data(file):
+    df = pd.read_csv(file)
+    lower_case = lambda x: str(x).lower()
+    df.rename(lower_case, axis='columns', inplace=True)
+    df = df.fillna(0)
+    print(f"This data set has {df.shape[0]} rows.")
+    """size = default_input("Enter number of records to sample: ", "1000")
+    while True:
+        try:
+            size = int(size)
+            break
+        except:
+            size = default_input("Please enter an integer: ", "150")
+    """
+    sample = df.sample(n=150)
 
-print(f"This data set has {df.shape[0]} rows.")
-size = default_input("Enter number of records to sample: ", "1000")
-while True:
-    try:
-        size = int(size)
-        break
-    except:
-        size = default_input("Please enter an integer: ", "1000")
+    sample['datetime'] = pd.to_datetime(sample['date'])
+    print(f"The sample data set has {sample.shape[0]} rows.")
+    # print(sample)
+    print(sample.info())
+    return sample
 
-
-sample = df.sample(n=size)
-print(f"The sample data set has {sample.shape[0]} rows.")
-print(df)
 
 # list of all vehicle types that were apart of a crash
-vehicle_type = ["ambulance", "bicycle", "bus", "fire truck", "large com veh(6 or more tires)",
-                "livery vehicle", "motorcycle", "other", "passenger vehicle", "pick-up truck",
-                "small com veh(4 tires)", "sports utility/station wagon", "taxi", "unkown", "van"]
-vehicle_type.upper()
-
+vehicle_type = ["AMBULANCE", "BICYCLE", "BUS", "FIRE TRUCK", "LARGE COM VEH(6 OR MORE TIRES)",
+                "LIVERY VEHICLE", "MOTORCYCLE", "OTHER", "PASSENGER VEHICLE", "PICK-UP TRUCK",
+                "SMALL COM VEH(4 TIRES)", "SPORTS UTILITY/STATION WAGON", "TAXI", "UNKOWN", "VAN"]
 # list of all boroughs
-borough = ["bronx", "brooklyn", "manhattan", "queens", "staten island"]
-borough.upper()
-
-# list of all potential factors that could have caused the vehicle to crash
+borough = ["BRONX", "BROOKLYN", "MANHATTAN", "QUEENS", "STATEN ISLAND"]
+# list of all potential factors that could have caused the vehicles to crash
 vehicle_factor = ["ACCELERATOR DEFECTIVE" "AGGRESSIVE DRIVING/ROAD RAGE", "ALCOHOL INVOLVEMENT", "ANIMALS ACTION",
                   "BACKING UNSAFELY", "BRAKES DEFECTIVE", "CELL PHONE (HAND-HELD)", "DRIVER INATTENTION/DISTRACTION",
                   "DRIVER INEXPERIENCE", "DRUGS (ILLEGAL)", "FAILURE TO KEEP RIGHT", "FAILURE TO YIELD RIGHT-OF-WAY",
@@ -60,26 +74,56 @@ vehicle_factor = ["ACCELERATOR DEFECTIVE" "AGGRESSIVE DRIVING/ROAD RAGE", "ALCOH
                   "OBSTRUCTION/DEBRIS", "OTHER ELECTRONIC DEVICE", "OTHER VEHICULAR", "OUTSIDE CAR DISTRACTION",
                   "OVERSIZED VEHICLE", "PASSENGER DISTRACTION", "PASSING OR LANE USAGE IMPROPER", "PAVEMENT DEFECTIVE",
                   "PAVEMENT SLIPPERY", "PEDESTRIAN/BICYCLIST/OTHER PEDESTRIAN ERROR/CONFUSION", "PHYSICAL DISABILITY",
-                  "PRESCRIPTION MEDICATION", "REACTION TO OTHER UNINVOLVED VEHICLE", "STEERING FAILURE", "TIRE FAILURE/INADEQUATE",
+                  "PRESCRIPTION MEDICATION", "REACTION TO OTHER UNINVOLVED VEHICLE", "STEERING FAILURE",
+                  "TIRE FAILURE/INADEQUATE",
                   "TRAFFIC CONTROL DEVICE IMPROPER/NON-WORKING", "TRAFFIC CONTROL DEVICE IMPROPER/NON-WORKING",
-                  "TURNING IMPROPERLY","UNSAFE LANE CHANGING", "UNSAFE SPEED", "UNSPECIFIED", "VIEW OBSTRUCTED/LIMITED",
+                  "TURNING IMPROPERLY", "UNSAFE LANE CHANGING", "UNSAFE SPEED", "UNSPECIFIED",
+                  "VIEW OBSTRUCTED/LIMITED",
                   ]
-vehicle_factor.lower()
+
 
 # pivot table that will compare the average people injured from each borough
-pd.pivot_table(df, index=["BOROUGH"], values=["PERSONS INJURED"], aggfunc=[np.average], fill_value=0)
 
+def histogram_test(data):
+    global MONTHS
+    month_list = list(MONTHS.values())
+    month_nums = list(MONTHS.keys())
+    month = st.selectbox('Select Month', month_list)
+    position = month_list.index(month)
+    num = month_nums[position] - 1
+    st.markdown("### **Interactive Histogram**")
+    print(data['datetime'].dt.month)
+    print(data[data['datetime'].dt.month == num])
+    hist_data = data[data['datetime'].dt.month == num]
+    count = hist_data['unique key'].count()
+    print(f"{hist_data.count()}{hist_data['unique key'].count()}")
+    max = hist_data['unique key'].max()
+    percentage = str(round(count / max * 100, 2))
+    hist_title = f"Percentage of Crashes Between at {month}   ({percentage}%)"
+    rist = hist_data['datetime'].tolist()
+    arr = np.array(rist)
+    num = 24
+    bins = 1
+    fig, ax = plt.subplots()
+    N, bins, patches = ax.hist(arr, bins=bins, color='firebrick', edgecolor='black')
+    plt.xlim(-1, 25)
+    plt.xlabel("Hour of the Day")
+    plt.ylabel("Number of Crashes")
+    plt.title(hist_title)
+    # st.bar_chart(np.histogram(data[data['datetime'].dt.hour], bins=24, range=(0,24))[0])
+    # st.pyplot(fig)
 
 # histogram to see the number of crashes within a time frame
-def histogram():
+def histogram(file):
+    hour = st.slider('Select Hour',0,0,23,1)
     st.markdown("### **Interactive Histogram**")
     st.sidebar.markdown("#### **Please select your upper and lower bound hours**")
     time_min = st.sidebar.slider("Lower Bound Hour:", 0, 0, 24, 1)
     time_max = st.sidebar.slider("Upper Bound Hour:", 0, 0, 24, 1)
     hourdf = file[(file.time >= time_min) & (file.time <= time_max)]
     count = hourdf['unique key'].count()
-    max = file['unique key'].count()
-    percentage = str(round(count/max * 100, 2))
+    max = file['unique key'].max()
+    percentage = str(round(count / max * 100, 2))
     hist_title = f"Percentage of Crashes Between the Hours {time_min} and {time_max} ({percentage}%)"
     rist = file['time'].tolist()
     arr = np.array(rist)
@@ -95,7 +139,27 @@ def histogram():
     plt.title(hist_title)
     st.pyplot(fig)
 
-# pie chart counting the type of vehicle and average people killed
+
+# chart looking at the number of people injured
+# pie chart counting the type of vehicle or borough
+hide_streamlit_style = """
+            <style>
+            footer:after {
+                content:'by https://gregoirejan.github.io / Using frost.met.no API';
+                visibility: visible;
+                display: block;
+                position: relative;
+                #background-color: red;
+                padding: 5px;
+                top: 2px;
+            }
+            </style>
+            """
+
+
+# st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
+# st.title("Crashes in NYC")
 
 
 # Function adds a title to the project and returns no value
@@ -105,8 +169,14 @@ def title():
 
 def main():
     title()
+    df = load_data(FILE)
+    if st.checkbox('View Raw Data?'):
+        st.write(df)
+    histogram_test(df)
+    # pd.pivot_table(df, index=["BOROUGH"], values=["PERSONS INJURED"], aggfunc=[np.average], fill_value=0)
 
 
 main()
 
 # streamlit run C:/Users/Julia Farry/PycharmProjects/cs230FinalProject/FinalProject.py
+# streamlit run C:/Users/baxte/Documents/Sophomore Year/Spring/CS 230/cs230FinalProject/FinalProject.py
