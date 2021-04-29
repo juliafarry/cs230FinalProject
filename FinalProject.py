@@ -14,7 +14,6 @@ Add/drop/select/create new/group columns, frequency count, other features as you
 
 """
 import pandas as pd
-import pandas_datareader as pdr
 import matplotlib.pyplot as plt
 import numpy as np
 import streamlit as st
@@ -70,6 +69,7 @@ def pie_chart(data):
     st.subheader("**Pie Chart of Vehicles Involved**")
     pass
 
+
 def histogram_test(data):
     global MONTHS
     hist_data = pd.DataFrame()
@@ -94,8 +94,6 @@ def histogram_test(data):
     ax.set_xticks(np.arange(24))
     plt.title(hist_title)
     st.pyplot(fig)
-    # hist = np.histogram(hist_data['datetimetime'].dt.hour, bins=24, range=(0,24))[0]
-    # st.bar_chart(np.histogram(hist_data['datetimetime'].dt.hour, bins=24, range=(0,24))[0])
 
 
 def map(data):
@@ -111,8 +109,6 @@ def map(data):
     st.pydeck_chart(map)
 
 
-# chart looking at the number of people injured
-# pie chart counting the type of vehicle or borough
 hide_streamlit_style = """
             <style>
             footer:after {
