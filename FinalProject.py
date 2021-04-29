@@ -111,6 +111,13 @@ def title():
 
 def main():
     title()
+    st.write("""
+            Introduction to data: \n
+            This program displays a wide variety of options of viewing New York City crash data.
+            Using various functions, we have created charts to display all crash locations on a map, a pivot table and bar chart
+            showing the number of injured people in crashes, and an interactive histogram to look at crash times each month.
+            We have also included a sidebar to make viewing the charts easier, as you can view each one individually.
+             """)
     df = load_data(FILE)
     st.sidebar.title("Selector")
     visualization = st.sidebar.selectbox("Select a chart type:", ("Select a Chart", "Bar Chart", "Histogram", "Map"))
