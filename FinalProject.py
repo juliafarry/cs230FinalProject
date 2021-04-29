@@ -58,16 +58,24 @@ def bar(data):
     dict = {"bronx": 0, "brooklyn": 0, "manhattan": 0, "queens": 0, "staten island": 0}
     st.subheader("**Bar Chart of Average People Killed in Vehicles From Each Borough**")
     # list of all boroughs
-    # borough = ["bronx", "brooklyn", "manhattan", "queens", "staten island"]
-    for i in dict.keys():
-        temp = data[data['borough'] == i]
-        dict[i] = temp['persons killed'].mean()
-        print(dict)
+    borough = np.array["bronx", "brooklyn", "manhattan", "queens", "staten island"]
+    chart_data = pd.DataFrame()
+    chart_data['borough'] = borough
+    chart_data['persons injured'] = persons_injured.mean()
+    chart_v1 = alt.Chart(chart_data).mark_bar().encode(
+        x='boroughs',
+        y='persons injured')
+    st.write("", "", chart_v1)
+    # st.bar_chart(borough)
+    # for i in dict.keys():
+    #     temp = data[data['borough'] == i]
+    #     dict[i] = temp['persons killed'].mean()
+    #     print(dict)
 
 
-# pie chart of the number of vehicles involved in the crash
-def pie_chart(data):
-    st.subheader("**Pie Chart of Vehicles Involved**")
+# line chart of the number of vehicles involved in the crash
+def line_chart(data):
+    st.subheader("**Line Chart of Vehicles Involved**")
     pass
 
 
@@ -124,6 +132,7 @@ hide_streamlit_style = """
             </style>
             """
 
+
 # Function adds a title to the project and returns no value
 def title():
     st.title("NYC Vehicle Crash Data")
@@ -143,8 +152,9 @@ def main():
         st.write(df)
     st.map(df)
     bar(df)
-    pie_chart(df)
+    line_chart(df)
     histogram_test(df)
+
 
 main()
 
