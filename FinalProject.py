@@ -166,8 +166,7 @@ hide_streamlit_style = """
 # st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 # st.title("Crashes in NYC")
-
-
+print("Hello")
 # Function adds a title to the project and returns no value
 def title():
     st.title("NYC Vehicle Crash Data")
