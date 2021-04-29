@@ -54,26 +54,20 @@ def load_data(file):
     return sample
 
 
-# list of all vehicle types that were apart of a crash
-vehicle_type = ["AMBULANCE", "BICYCLE", "BUS", "FIRE TRUCK", "LARGE COM VEH(6 OR MORE TIRES)",
-                "LIVERY VEHICLE", "MOTORCYCLE", "OTHER", "PASSENGER VEHICLE", "PICK-UP TRUCK",
-                "SMALL COM VEH(4 TIRES)", "SPORTS UTILITY/STATION WAGON", "TAXI", "UNKOWN", "VAN"]
-# list of all boroughs
-borough = ["BRONX", "BROOKLYN", "MANHATTAN", "QUEENS", "STATEN ISLAND"]
-# list of all potential factors that could have caused the vehicles to crash
-vehicle_factor = ["ACCELERATOR DEFECTIVE" "AGGRESSIVE DRIVING/ROAD RAGE", "ALCOHOL INVOLVEMENT", "ANIMALS ACTION",
-                  "BACKING UNSAFELY", "BRAKES DEFECTIVE", "CELL PHONE (HAND-HELD)", "DRIVER INATTENTION/DISTRACTION",
-                  "DRIVER INEXPERIENCE", "DRUGS (ILLEGAL)", "FAILURE TO KEEP RIGHT", "FAILURE TO YIELD RIGHT-OF-WAY",
-                  "FATIGUED/DROWSY", "FELL ASLEEP", "FOLLOWING TOO CLOSELY", "GLARE", "ILLNESS", "LOST CONSCIOUSNESS",
-                  "OBSTRUCTION/DEBRIS", "OTHER ELECTRONIC DEVICE", "OTHER VEHICULAR", "OUTSIDE CAR DISTRACTION",
-                  "OVERSIZED VEHICLE", "PASSENGER DISTRACTION", "PASSING OR LANE USAGE IMPROPER", "PAVEMENT DEFECTIVE",
-                  "PAVEMENT SLIPPERY", "PEDESTRIAN/BICYCLIST/OTHER PEDESTRIAN ERROR/CONFUSION", "PHYSICAL DISABILITY",
-                  "PRESCRIPTION MEDICATION", "REACTION TO OTHER UNINVOLVED VEHICLE", "STEERING FAILURE",
-                  "TIRE FAILURE/INADEQUATE",
-                  "TRAFFIC CONTROL DEVICE IMPROPER/NON-WORKING", "TRAFFIC CONTROL DEVICE IMPROPER/NON-WORKING",
-                  "TURNING IMPROPERLY", "UNSAFE LANE CHANGING", "UNSAFE SPEED", "UNSPECIFIED",
-                  "VIEW OBSTRUCTED/LIMITED",
-                  ]
+def bar(data):
+    dict = {"bronx": 0, "brooklyn": 0, "manhattan": 0, "queens": 0, "staten island": 0}
+    st.subheader("**Bar Chart of Average People Killed in Vehicles From Each Borough**")
+    # list of all boroughs
+    # borough = ["bronx", "brooklyn", "manhattan", "queens", "staten island"]
+    for i in dict.keys():
+        temp = data[data['borough'] == i]
+        dict[i] = temp['persons killed'].mean()
+        print(dict)
+
+
+def pie_chart(data):
+    st.subheader("**Pie Chart of Vehicles Involved**")
+    pass
 
 
 def histogram_test(data):
@@ -108,37 +102,9 @@ def map(data):
     num = month_nums[position] - 1
     map_data = data[data['datetime'].dt.month == num]
     st.bar_chart(np.histogram(map_data[map_data['datetime'].dt.hour], bins=24, range=(0,24))[0])
-    view_state = pdk.ViewState(latitude = 40.7128, longitude = 74.0060)
+    view_state = pdk.ViewState(latitude = 40.7128, longitude = 74.0060, zoom = 4)
     map = pdk.Deck(initial_view_state=view_state)
     st.pydeck_chart(map)
-    # st.pyplot(fig)
-    print("hello")
-
-# histogram to see the number of crashes within a time frame
-def histogram(file):
-    hour = st.slider('Select Hour',0,0, 23,1)
-    st.markdown("### **Interactive Histogram**")
-    st.sidebar.markdown("#### **Please select your upper and lower bound hours**")
-    time_min = st.sidebar.slider("Lower Bound Hour:", 0, 0, 24, 1)
-    time_max = st.sidebar.slider("Upper Bound Hour:", 0, 0, 24, 1)
-    hourdf = file[(file.time >= time_min) & (file.time <= time_max)]
-    count = hourdf['unique key'].count()
-    max = file['unique key'].max()
-    percentage = str(round(count / max * 100, 2))
-    hist_title = f"Percentage of Crashes Between the Hours {time_min} and {time_max} ({percentage}%)"
-    rist = file['time'].tolist()
-    arr = np.array(rist)
-    num = 24
-    bins = list(range(num + 1))
-    fig, ax = plt.subplots()
-    N, bins, patches = ax.hist(arr, bins=bins, color='firebrick', EdgeColor='black')
-    for i in range(time_min, time_max):
-        patches[i].set_facecolor('midnightblue')
-    plt.xlim(-1, 25)
-    plt.xlabel("Hour of the Day")
-    plt.ylabel("Number of Crashes")
-    plt.title(hist_title)
-    st.pyplot(fig)
 
 
 # chart looking at the number of people injured
@@ -168,19 +134,22 @@ def title():
     st.title("NYC Vehicle Crash Data")
 
 
-sidebar_title = st.sidebar.title("Selector")
-visualization = st.sidebar.selectbox("Select a chart type:", ("Bar Chart", "Pie Chart", "Histogram"))
-injuries = st.sidebar.radio("Person's affected", ("Injured", "Killed"))
+def sidebar():
+    st.sidebar.title("Selector")
+    st.sidebar.selectbox("Select a chart type:", ("Bar Chart", "Pie Chart", "Histogram"))
+    st.sidebar.radio("Person's affected", ("Injured", "Killed"))
 
 
 def main():
     title()
+    sidebar()
     df = load_data(FILE)
     if st.checkbox('View Raw Data?'):
         st.write(df)
-    histogram_test(df)
-    # pd.pivot_table(df, index=["BOROUGH"], values=["PERSONS INJURED"], aggfunc=[np.average], fill_value=0)
     st.map(df)
+    bar(df)
+    pie_chart(df)
+    histogram_test(df)
 
 
 main()
