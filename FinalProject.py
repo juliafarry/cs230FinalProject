@@ -14,6 +14,7 @@ Add/drop/select/create new/group columns, frequency count, other features as you
 
 """
 import pandas as pd
+import pandas_datareader as pdr
 import matplotlib.pyplot as plt
 import numpy as np
 import streamlit as st
@@ -44,10 +45,10 @@ def load_data(file):
     df.rename(lower_case, axis='columns', inplace=True)
     df = df.fillna(0)
     print(f"This data set has {df.shape[0]} rows.")
-    sample = df.sample(n=250)
+    sample = df.sample(n=1000)
     sample['datetime'] = pd.to_datetime(sample['date'])
     sample['datetime'] = sample['datetime'].dt.month
-    print(sample['datetime'])
+    sample['datetime'] = pd.to_numeric(sample['datetime'])
     sample['datetimetime'] = pd.to_datetime(sample['time'])
     print(f"The sample data set has {sample.shape[0]} rows.")
     print(sample.info())
@@ -75,29 +76,32 @@ vehicle_factor = ["ACCELERATOR DEFECTIVE" "AGGRESSIVE DRIVING/ROAD RAGE", "ALCOH
                   "VIEW OBSTRUCTED/LIMITED",
                   ]
 
-
 def histogram_test(data):
     global MONTHS
+    hist_data = pd.DataFrame()
     month_list = list(MONTHS.values())
     month_nums = list(MONTHS.keys())
     month = st.selectbox('Select Month', month_list)
     position = month_list.index(month)
-    num = month_nums[position] - 1
+    num = month_nums[position]
     st.markdown("### **Interactive Histogram**")
-    hist_data = data[data['datetime'].dt.month == num]
+    hist_data = data[data['datetime'] == num]
     hist_title = f"Time of Day Histogram for the month of {month}"
-    test = hist_data[hist_data['datetime'] == num]
-    rist = hist_data['datetimetime'].tolist()
+    rist = hist_data['datetimetime'].dt.hour.tolist()
     arr = np.array(rist)
+    print(arr)
     num = 24
-    bins = 24
+    bins = list(range(num + 1))
     fig, ax = plt.subplots()
-    N, bins, patches = ax.hist(arr, bins=bins, color='firebrick', edgecolor='black')
+    plt.hist(arr, bins=bins, color='red', edgecolor='black', align='mid')
     plt.xlim(-1, 25)
     plt.xlabel("Hour of the Day")
     plt.ylabel("Number of Crashes")
+    ax.set_xticks(np.arange(24))
     plt.title(hist_title)
-    st.bar_chart(np.histogram(hist_data['datetimetime'].dt.hour, bins=24, range=(0,24))[0])
+    st.pyplot(fig)
+    # hist = np.histogram(hist_data['datetimetime'].dt.hour, bins=24, range=(0,24))[0]
+    # st.bar_chart(np.histogram(hist_data['datetimetime'].dt.hour, bins=24, range=(0,24))[0])
 
 
 def map(data):
