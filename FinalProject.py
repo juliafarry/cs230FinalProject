@@ -39,34 +39,31 @@ def load_data(file):
     lower_case = lambda x: str(x).lower()
     df.rename(lower_case, axis='columns', inplace=True)
     df = df.fillna(0)
-    print(f"This data set has {df.shape[0]} rows.")
     sample = df.sample(n=1000)
     sample['datetime'] = pd.to_datetime(sample['date'])
     sample['datetime'] = sample['datetime'].dt.month
     sample['datetime'] = pd.to_numeric(sample['datetime'])
     sample['datetimetime'] = pd.to_datetime(sample['time'])
-    print(f"The sample data set has {sample.shape[0]} rows.")
-    print(sample.info())
     return sample
 
 
 # bar chart taking the average people injured in each borough based on the pivot table
 def bar(data):
     dict = {}
-    st.subheader("**Pivot Table of Average Injuries**")
+    st.subheader("**Pivot Table of Average Injuries Per Crash**")
     piv = pd.pivot_table(data, index=["borough"], values=["persons injured"], aggfunc=[np.average], fill_value=0)
     data = data[data['persons injured'] != 0]
     st.write(piv)
-    st.subheader("**Bar Chart of People Injured in Vehicles From Each Borough**")
+    st.subheader("**Bar Chart of People Injured in Accidents From Each Borough**\n")
     boroughs = ['BRONX', 'BROOKLYN','MANHATTAN', 'QUEENS', 'STATEN ISLAND']
     # st.bar_chart(boroughs, index=boroughs)
     print(type(data[data['borough'] == 'BRONX']))
     for i in boroughs:
         counter = len(data[data['borough'] == i])
         dict[i] = counter
-    print(dict)
-    plt.bar(range(len(dict)), dict.values(), align='center')
-    st.pyplot()
+    dictdf = pd.DataFrame(list(dict.items()), columns = ['boroughs', 'injuries']).set_index('boroughs')
+    print(dictdf)
+    st.bar_chart(dictdf)
 
 
 # histogram examining the average time of day crashes occur each month over the years
