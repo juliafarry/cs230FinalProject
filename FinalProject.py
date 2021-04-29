@@ -11,7 +11,6 @@ Filtering data by one or more conditions
 Analyzing data with pivot tables
 Managing rows or columns
 Add/drop/select/create new/group columns, frequency count, other features as you wish
-
 """
 import pandas as pd
 import pandas_datareader as pdr
@@ -76,6 +75,7 @@ vehicle_factor = ["ACCELERATOR DEFECTIVE" "AGGRESSIVE DRIVING/ROAD RAGE", "ALCOH
                   "VIEW OBSTRUCTED/LIMITED",
                   ]
 
+
 def histogram_test(data):
     global MONTHS
     hist_data = pd.DataFrame()
@@ -117,6 +117,7 @@ def map(data):
     st.pydeck_chart(map)
     # st.pyplot(fig)
     print("hello")
+
 
 # histogram to see the number of crashes within a time frame
 def histogram(file):
@@ -183,9 +184,9 @@ def main():
     if st.checkbox('View Raw Data?'):
         st.write(df)
     histogram_test(df)
-    # pd.pivot_table(df, index=["BOROUGH"], values=["PERSONS INJURED"], aggfunc=[np.average], fill_value=0)
+    stuff = pd.pivot_table(df, index=["borough"], values=["persons injured"], aggfunc=[np.average], fill_value=0)
     st.map(df)
+    st.write(stuff)
 
 
 main()
-
