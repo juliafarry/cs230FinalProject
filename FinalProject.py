@@ -47,12 +47,14 @@ def load_data(file):
     return sample
 
 
+# bar chart taking the average people injured in each borough based on the pivot table
 def bar(data):
     dict = {}
     st.subheader("**Pivot Table of Average Injuries Per Crash**")
     piv = pd.pivot_table(data, index=["borough"], values=["persons injured"], aggfunc=[np.average], fill_value=0)
     data = data[data['persons injured'] != 0]
     st.write(piv)
+    st.write("**The most people injured in accidents was in the Bronx**")
     st.subheader("**Bar Chart of People Injured in Accidents From Each Borough**\n")
     boroughs = ['BRONX', 'BROOKLYN','MANHATTAN', 'QUEENS', 'STATEN ISLAND']
     # st.bar_chart(boroughs, index=boroughs)
@@ -102,6 +104,7 @@ def map(data):
     st.pydeck_chart(mappy)
 
 
+# Function adds a title to the project and returns no value
 def title():
     st.title("NYC Vehicle Crash Data")
 
@@ -117,7 +120,6 @@ def main():
              """)
     df = load_data(FILE)
     st.sidebar.title("Selector")
-    map(df)
     visualization = st.sidebar.selectbox("Select a chart type:", ("Select a Chart", "Bar Chart", "Histogram", "Map"))
     if visualization == "Bar Chart":
         bar(df)
@@ -134,3 +136,4 @@ def main():
 
 
 main()
+
