@@ -13,7 +13,6 @@ Managing rows or columns
 Add/drop/select/create new/group columns, frequency count, other features as you wish
 """
 import pandas as pd
-import pandas_datareader as pdr
 import matplotlib.pyplot as plt
 import numpy as np
 import streamlit as st
@@ -54,37 +53,43 @@ def load_data(file):
     return sample
 
 
-# list of all vehicle types that were apart of a crash
-vehicle_type = ["AMBULANCE", "BICYCLE", "BUS", "FIRE TRUCK", "LARGE COM VEH(6 OR MORE TIRES)",
-                "LIVERY VEHICLE", "MOTORCYCLE", "OTHER", "PASSENGER VEHICLE", "PICK-UP TRUCK",
-                "SMALL COM VEH(4 TIRES)", "SPORTS UTILITY/STATION WAGON", "TAXI", "UNKOWN", "VAN"]
-# list of all boroughs
-borough = ["BRONX", "BROOKLYN", "MANHATTAN", "QUEENS", "STATEN ISLAND"]
-# list of all potential factors that could have caused the vehicles to crash
-vehicle_factor = ["ACCELERATOR DEFECTIVE" "AGGRESSIVE DRIVING/ROAD RAGE", "ALCOHOL INVOLVEMENT", "ANIMALS ACTION",
-                  "BACKING UNSAFELY", "BRAKES DEFECTIVE", "CELL PHONE (HAND-HELD)", "DRIVER INATTENTION/DISTRACTION",
-                  "DRIVER INEXPERIENCE", "DRUGS (ILLEGAL)", "FAILURE TO KEEP RIGHT", "FAILURE TO YIELD RIGHT-OF-WAY",
-                  "FATIGUED/DROWSY", "FELL ASLEEP", "FOLLOWING TOO CLOSELY", "GLARE", "ILLNESS", "LOST CONSCIOUSNESS",
-                  "OBSTRUCTION/DEBRIS", "OTHER ELECTRONIC DEVICE", "OTHER VEHICULAR", "OUTSIDE CAR DISTRACTION",
-                  "OVERSIZED VEHICLE", "PASSENGER DISTRACTION", "PASSING OR LANE USAGE IMPROPER", "PAVEMENT DEFECTIVE",
-                  "PAVEMENT SLIPPERY", "PEDESTRIAN/BICYCLIST/OTHER PEDESTRIAN ERROR/CONFUSION", "PHYSICAL DISABILITY",
-                  "PRESCRIPTION MEDICATION", "REACTION TO OTHER UNINVOLVED VEHICLE", "STEERING FAILURE",
-                  "TIRE FAILURE/INADEQUATE",
-                  "TRAFFIC CONTROL DEVICE IMPROPER/NON-WORKING", "TRAFFIC CONTROL DEVICE IMPROPER/NON-WORKING",
-                  "TURNING IMPROPERLY", "UNSAFE LANE CHANGING", "UNSAFE SPEED", "UNSPECIFIED",
-                  "VIEW OBSTRUCTED/LIMITED",
-                  ]
+# bar chart taking the average people killed in each borough
+def bar(data):
+    dict = {"bronx": 0, "brooklyn": 0, "manhattan": 0, "queens": 0, "staten island": 0}
+    st.subheader("**Bar Chart of Average People Killed in Vehicles From Each Borough**")
+    # list of all boroughs
+    borough = np.array["bronx", "brooklyn", "manhattan", "queens", "staten island"]
+    chart_data = pd.DataFrame()
+    chart_data['borough'] = borough
+    chart_data['persons injured'] = persons_injured.mean()
+    chart_v1 = alt.Chart(chart_data).mark_bar().encode(
+        x='boroughs',
+        y='persons injured')
+    st.write("", "", chart_v1)
+    # st.bar_chart(borough)
+    # for i in dict.keys():
+    #     temp = data[data['borough'] == i]
+    #     dict[i] = temp['persons killed'].mean()
+    #     print(dict)
+
+
+# line chart of the number of vehicles involved in the crash
+def line_chart(data):
+    st.subheader("**Line Chart of Vehicles Involved**")
+    line_data = pd.DataFrame()
+
+    pass
 
 
 def histogram_test(data):
     global MONTHS
+    st.markdown("### **Interactive Histogram**")
     hist_data = pd.DataFrame()
     month_list = list(MONTHS.values())
     month_nums = list(MONTHS.keys())
     month = st.selectbox('Select Month', month_list)
     position = month_list.index(month)
     num = month_nums[position]
-    st.markdown("### **Interactive Histogram**")
     hist_data = data[data['datetime'] == num]
     hist_title = f"Time of Day Histogram for the month of {month}"
     rist = hist_data['datetimetime'].dt.hour.tolist()
@@ -105,18 +110,15 @@ def histogram_test(data):
 
 
 def map(data):
-    month_list = list(MONTHS.values())
-    month_nums = list(MONTHS.keys())
-    month = st.selectbox('Select Month', month_list)
-    position = month_list.index(month)
-    num = month_nums[position] - 1
-    map_data = data[data['datetime'].dt.month == num]
-    st.bar_chart(np.histogram(map_data[map_data['datetime'].dt.hour], bins=24, range=(0,24))[0])
-    view_state = pdk.ViewState(latitude = 40.7128, longitude = 74.0060)
-    map = pdk.Deck(initial_view_state=view_state)
-    st.pydeck_chart(map)
-    # st.pyplot(fig)
-    print("hello")
+    st.markdown("### **Map of Crashes in NYC**")
+    loc = []
+    for i in range(len(data)):
+        loc.append([data[i][0]], data[i][5], data[i][6])
+    nyc_map = pd.DataFrame(loc, columns=['Unique Key', 'Latitude', 'Longitude'])
+    view_state = pdk.ViewState(latitude =nyc_map['Latitude'].mean(), longitude = nyc_map['longitude'].mean(), zoom = 4, min_zoom=1, max_zoom=20)
+    layer = pdk.Layer('Scatterplotlayer', nyc_map, pickable=True, get_position=['Longitude', 'Latitude'], get_radius=5000, get_color=[0, 255, 255])
+    nyc_map = pdk.Deck(map_style = 'light', initial_view_state=view_state, layers=[layer])
+    st.pydeck_chart(nyc_map)
 
 
 # histogram to see the number of crashes within a time frame
@@ -163,23 +165,21 @@ hide_streamlit_style = """
             """
 
 
-# st.markdown(hide_streamlit_style, unsafe_allow_html=True)
-
-# st.title("Crashes in NYC")
-
-
 # Function adds a title to the project and returns no value
 def title():
     st.title("NYC Vehicle Crash Data")
 
 
-sidebar_title = st.sidebar.title("Selector")
-visualization = st.sidebar.selectbox("Select a chart type:", ("Bar Chart", "Pie Chart", "Histogram"))
-injuries = st.sidebar.radio("Person's affected", ("Injured", "Killed"))
+def sidebar():
+    st.sidebar.title("Selector")
+    st.sidebar.slider("Set city zoom", 0, 5, 10)
+    # st.sidebar.selectbox("Select a chart type:", ("Bar Chart", "Pie Chart", "Histogram"))
+    # st.sidebar.radio("Person's affected", ("Injured", "Killed"))
 
 
 def main():
     title()
+    sidebar()
     df = load_data(FILE)
     if st.checkbox('View Raw Data?'):
         st.write(df)
@@ -187,6 +187,9 @@ def main():
     stuff = pd.pivot_table(df, index=["borough"], values=["persons injured"], aggfunc=[np.average], fill_value=0)
     st.map(df)
     st.write(stuff)
+    # bar(df)
+    # line_chart(df)
+    histogram_test(df)
 
 
 main()
