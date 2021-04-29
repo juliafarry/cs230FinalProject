@@ -103,9 +103,9 @@ def map(data):
         loc.append([data[i][0]], data[i][5], data[i][6])
     nyc_map = pd.DataFrame(loc, columns=['Unique Key', 'Latitude', 'Longitude'])
     view_state = pdk.ViewState(latitude = 40.7128.mean(), longitude = 74.0060.mean(), zoom = 4, min_zoom=1, max_zoom=20)
-    layer = pdk.Layer('Scatterplotlayer', map, pickable=True, get_position=['Longitue', 'Latitude'], get_radius=5000, get_color=[0, 255, 255])
+    layer = pdk.Layer('Scatterplotlayer', nyc_map, pickable=True, get_position=['Longitue', 'Latitude'], get_radius=5000, get_color=[0, 255, 255])
     nyc_map = pdk.Deck(initial_view_state=view_state)
-    st.pydeck_chart(map)
+    st.pydeck_chart(nyc_map)
 
 
 hide_streamlit_style = """
