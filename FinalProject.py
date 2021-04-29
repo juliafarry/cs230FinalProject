@@ -55,7 +55,7 @@ def load_data(file):
 
 # bar chart taking the average people killed in each borough
 def bar(data):
-    dict = {"bronx": 0, "brooklyn": 0, "manhattan": 0, "queens": 0, "staten island": 0}
+    """dict = {"bronx": 0, "brooklyn": 0, "manhattan": 0, "queens": 0, "staten island": 0}
     st.subheader("**Bar Chart of Average People Killed in Vehicles From Each Borough**")
     # list of all boroughs
     borough = np.array["bronx", "brooklyn", "manhattan", "queens", "staten island"]
@@ -70,8 +70,8 @@ def bar(data):
     # for i in dict.keys():
     #     temp = data[data['borough'] == i]
     #     dict[i] = temp['persons killed'].mean()
-    #     print(dict)
-
+    #     print(dict)"""
+    pass
 
 # line chart of the number of vehicles involved in the crash
 def line_chart(data):
@@ -189,7 +189,6 @@ def main():
     st.write(stuff)
     # bar(df)
     # line_chart(df)
-    histogram_test(df)
 
 
 main()
