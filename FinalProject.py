@@ -175,7 +175,6 @@ injuries = st.sidebar.radio("Person's affected", ("Injured", "Killed"))
 
 def main():
     title()
-    print('Hello')
     df = load_data(FILE)
     if st.checkbox('View Raw Data?'):
         st.write(df)
