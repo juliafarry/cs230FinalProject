@@ -43,17 +43,11 @@ def load_data(file):
     df.rename(lower_case, axis='columns', inplace=True)
     df = df.fillna(0)
     print(f"This data set has {df.shape[0]} rows.")
-    """size = default_input("Enter number of records to sample: ", "1000")
-    while True:
-        try:
-            size = int(size)
-            break
-        except:
-            size = default_input("Please enter an integer: ", "150")
-    """
-    sample = df.sample(n=150)
-
+    sample = df.sample(n=250)
     sample['datetime'] = pd.to_datetime(sample['date'])
+    sample['datetime'] = sample['datetime'].dt.month
+    print(sample['datetime'])
+    sample['datetimetime'] = pd.to_datetime(sample['time'])
     print(f"The sample data set has {sample.shape[0]} rows.")
     # print(sample)
     print(sample.info())
@@ -92,20 +86,20 @@ def histogram_test(data):
     position = month_list.index(month)
     num = month_nums[position] - 1
     st.markdown("### **Interactive Histogram**")
-    print(type(data['datetime'].dt.month))
     hist_data = data[data['datetime'].dt.month == num]
     hist_title = f"Time of Day Histogram for the month of {month}"
-    rist = hist_data['datetime'].dt.month.tolist()
+    test = hist_data[hist_data['datetime'] == num]
+    rist = hist_data['datetimetime'].tolist()
     arr = np.array(rist)
     num = 24
-    bins = 1
+    bins = 24
     fig, ax = plt.subplots()
     N, bins, patches = ax.hist(arr, bins=bins, color='firebrick', edgecolor='black')
     plt.xlim(-1, 25)
     plt.xlabel("Hour of the Day")
     plt.ylabel("Number of Crashes")
     plt.title(hist_title)
-    st.bar_chart(np.histogram(hist_data[hist_data['datetime'].dt.hour], bins=24, range=(0,24))[0])
+    st.bar_chart(np.histogram(hist_data['datetimetime'].dt.hour, bins=24, range=(0,24))[0])
     # st.pyplot(fig)
     print("hello")
 
