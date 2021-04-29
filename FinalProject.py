@@ -47,7 +47,6 @@ def load_data(file):
     return sample
 
 
-# bar chart taking the average people injured in each borough based on the pivot table
 def bar(data):
     dict = {}
     st.subheader("**Pivot Table of Average Injuries Per Crash**")
@@ -94,17 +93,15 @@ def histogram_test(data):
 
 def map(data):
     st.markdown("### **Map of Crashes in NYC**")
-    loc = []
-    for i in range(len(data)):
-        loc.append([data[i][0], data[i][5], data[i][6]])
-    nyc_map = pd.DataFrame(loc, columns=['Unique Key', 'Latitude', 'Longitude'])
-    view_state = pdk.ViewState(latitude =40.7306, longitude = -73.9352, zoom = 4, min_zoom=1, max_zoom=20)
-    layer = pdk.Layer('Scatterplotlayer', nyc_map, pickable=True, get_position=['Longitude', 'Latitude'], get_radius=5000, get_color=[0, 255, 255])
-    nyc_map = pdk.Deck(map_style = 'light', initial_view_state=view_state, layers=[layer])
-    st.pydeck_chart(nyc_map)
+    map_df = data[['latitude', 'longitude']]
+    print(map_df)
+    # nyc_map = pd.DataFrame(loc, columns=['Unique Key', 'Latitude', 'Longitude'])
+    view_state = pdk.ViewState(latitude =40.7306, longitude = -73.9352, zoom = 8, min_zoom=1, max_zoom=20)
+    layer = pdk.Layer('Scatterplotlayer', map_df, pickable=True, get_position=['latitude', 'longitude'], get_radius=10000, get_color=[0, 255, 255])
+    mappy = pdk.Deck(map_style = 'light', initial_view_state=view_state, layers=[layer])
+    st.pydeck_chart(mappy)
 
 
-# Function adds a title to the project and returns no value
 def title():
     st.title("NYC Vehicle Crash Data")
 
@@ -120,6 +117,7 @@ def main():
              """)
     df = load_data(FILE)
     st.sidebar.title("Selector")
+    map(df)
     visualization = st.sidebar.selectbox("Select a chart type:", ("Select a Chart", "Bar Chart", "Histogram", "Map"))
     if visualization == "Bar Chart":
         bar(df)
@@ -136,4 +134,3 @@ def main():
 
 
 main()
-
