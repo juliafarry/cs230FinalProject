@@ -92,15 +92,10 @@ def histogram_test(data):
     position = month_list.index(month)
     num = month_nums[position] - 1
     st.markdown("### **Interactive Histogram**")
-    print(data['datetime'].dt.month)
-    print(data[data['datetime'].dt.month == num])
+    print(type(data['datetime'].dt.month))
     hist_data = data[data['datetime'].dt.month == num]
-    count = hist_data['unique key'].count()
-    print(f"{hist_data.count()}{hist_data['unique key'].count()}")
-    max = hist_data['unique key'].max()
-    percentage = str(round(count / max * 100, 2))
-    hist_title = f"Percentage of Crashes Between at {month}   ({percentage}%)"
-    rist = hist_data['datetime'].tolist()
+    hist_title = f"Time of Day Histogram for the month of {month}"
+    rist = hist_data['datetime'].dt.month.tolist()
     arr = np.array(rist)
     num = 24
     bins = 1
@@ -110,8 +105,9 @@ def histogram_test(data):
     plt.xlabel("Hour of the Day")
     plt.ylabel("Number of Crashes")
     plt.title(hist_title)
-    # st.bar_chart(np.histogram(data[data['datetime'].dt.hour], bins=24, range=(0,24))[0])
+    st.bar_chart(np.histogram(hist_data[hist_data['datetime'].dt.hour], bins=24, range=(0,24))[0])
     # st.pyplot(fig)
+    print("hello")
 
 # histogram to see the number of crashes within a time frame
 def histogram(file):
@@ -174,7 +170,7 @@ def main():
         st.write(df)
     histogram_test(df)
     # pd.pivot_table(df, index=["BOROUGH"], values=["PERSONS INJURED"], aggfunc=[np.average], fill_value=0)
-
+    st.map(df)
 
 main()
 
