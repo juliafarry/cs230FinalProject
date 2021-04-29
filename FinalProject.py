@@ -116,7 +116,7 @@ def map(data):
 
 # histogram to see the number of crashes within a time frame
 def histogram(file):
-    hour = st.slider('Select Hour',0,0,23,1)
+    hour = st.slider('Select Hour',0,0, 23,1)
     st.markdown("### **Interactive Histogram**")
     st.sidebar.markdown("#### **Please select your upper and lower bound hours**")
     time_min = st.sidebar.slider("Lower Bound Hour:", 0, 0, 24, 1)
