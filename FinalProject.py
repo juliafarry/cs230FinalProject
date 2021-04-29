@@ -11,7 +11,6 @@ Filtering data by one or more conditions
 Analyzing data with pivot tables
 Managing rows or columns
 Add/drop/select/create new/group columns, frequency count, other features as you wish
-
 """
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -54,6 +53,7 @@ def load_data(file):
     return sample
 
 
+# bar chart taking the average people killed in each borough
 def bar(data):
     dict = {"bronx": 0, "brooklyn": 0, "manhattan": 0, "queens": 0, "staten island": 0}
     st.subheader("**Bar Chart of Average People Killed in Vehicles From Each Borough**")
@@ -65,11 +65,13 @@ def bar(data):
         print(dict)
 
 
+# pie chart of the number of vehicles involved in the crash
 def pie_chart(data):
     st.subheader("**Pie Chart of Vehicles Involved**")
     pass
 
 
+# histogram examining the average time of day crashes occur each month over the years
 def histogram_test(data):
     global MONTHS
     st.markdown("### **Interactive Histogram**")
@@ -122,12 +124,6 @@ hide_streamlit_style = """
             </style>
             """
 
-
-# st.markdown(hide_streamlit_style, unsafe_allow_html=True)
-
-# st.title("Crashes in NYC")
-
-
 # Function adds a title to the project and returns no value
 def title():
     st.title("NYC Vehicle Crash Data")
@@ -135,8 +131,8 @@ def title():
 
 def sidebar():
     st.sidebar.title("Selector")
-    st.sidebar.selectbox("Select a chart type:", ("Bar Chart", "Pie Chart", "Histogram"))
-    st.sidebar.radio("Person's affected", ("Injured", "Killed"))
+    # st.sidebar.selectbox("Select a chart type:", ("Bar Chart", "Pie Chart", "Histogram"))
+    # st.sidebar.radio("Person's affected", ("Injured", "Killed"))
 
 
 def main():
@@ -149,7 +145,6 @@ def main():
     bar(df)
     pie_chart(df)
     histogram_test(df)
-
 
 main()
 
