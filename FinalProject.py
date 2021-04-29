@@ -1,9 +1,9 @@
 """
 At least one function that has two parameters and returns a value
-At least one function that does not return a value
+
 Interacting with dictionaries, lists, and tuples
 Using a Python module to calculate a statistical function such as average, median, mode, etc.
-User Interface and dashboard with Streamlit.io
+
 
 at least 3 pandas capabilities:
 Sorting data in ascending or descending order, multi-column sorting
@@ -17,6 +17,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import streamlit as st
+import pydeck as pdk
 
 FILE = "nyc_crash.csv"
 
@@ -51,11 +52,10 @@ def load_data(file):
         except:
             size = default_input("Please enter an integer: ", "150")
     """
-    sample = df.sample(n=150)
+    sample = df.sample(n=250)
 
     sample['datetime'] = pd.to_datetime(sample['date'])
     print(f"The sample data set has {sample.shape[0]} rows.")
-    # print(sample)
     print(sample.info())
     return sample
 
@@ -103,7 +103,13 @@ def histogram_test(data):
     plt.xlabel("Hour of the Day")
     plt.ylabel("Number of Crashes")
     plt.title(hist_title)
+
+
+def map():
     st.bar_chart(np.histogram(hist_data[hist_data['datetime'].dt.hour], bins=24, range=(0,24))[0])
+    view_state = pdk.ViewState(latitude = 40.7128, longitude = 74.0060)
+    map = pdk.Deck(initial_view_state=view_state)
+    st.pydeck_chart(map)
     # st.pyplot(fig)
 
 
@@ -161,7 +167,10 @@ def title():
     st.title("NYC Vehicle Crash Data")
 
 
-st.sidebar.title("Selector")
+sidebar_title = st.sidebar.title("Selector")
+visualization = st.sidebar.selectbox("Select a chart type:", ("Bar Chart", "Pie Chart", "Histogram"))
+injuries = st.sidebar.radio("Person's affected", ("Injured", "Killed"))
+
 
 def main():
     title()
@@ -171,6 +180,7 @@ def main():
     histogram_test(df)
     # pd.pivot_table(df, index=["BOROUGH"], values=["PERSONS INJURED"], aggfunc=[np.average], fill_value=0)
     st.map(df)
+
 
 main()
 
