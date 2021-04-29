@@ -53,34 +53,28 @@ def load_data(file):
     return sample
 
 
-# bar chart taking the average people killed in each borough
+# bar chart taking the average people injured in each borough based on the pivot table
 def bar(data):
-    """dict = {"bronx": 0, "brooklyn": 0, "manhattan": 0, "queens": 0, "staten island": 0}
-    st.subheader("**Bar Chart of Average People Killed in Vehicles From Each Borough**")
-    # list of all boroughs
-    borough = np.array["bronx", "brooklyn", "manhattan", "queens", "staten island"]
-    chart_data = pd.DataFrame()
-    chart_data['borough'] = borough
-    chart_data['persons injured'] = persons_injured.mean()
-    chart_v1 = alt.Chart(chart_data).mark_bar().encode(
-        x='boroughs',
-        y='persons injured')
-    st.write("", "", chart_v1)
-    # st.bar_chart(borough)
-    # for i in dict.keys():
-    #     temp = data[data['borough'] == i]
-    #     dict[i] = temp['persons killed'].mean()
-    #     print(dict)"""
-    pass
+    st.subheader("**Pivot Table of Average Injuries**")
+    stuff = pd.pivot_table(data, index=["borough"], values=["persons injured"], aggfunc=[np.average], fill_value=0)
+    st.write(stuff)
+    st.subheader("**Bar Chart of Average People Injured in Vehicles From Each Borough**")
+    hours = data['datetimetime'].dt.hour
+    st.slider(hours)
+    boroughs = ['bronx', 'brooklyn','manhattan', 'queens', 'staten island']
+
+
+
 
 # line chart of the number of vehicles involved in the crash
 def line_chart(data):
     st.subheader("**Line Chart of Vehicles Involved**")
-    line_data = pd.DataFrame()
+    st.line_chart(data)
 
     pass
 
 
+# histogram examining the average time of day crashes occur each month over the years
 def histogram_test(data):
     global MONTHS
     st.markdown("### **Interactive Histogram**")
@@ -105,8 +99,6 @@ def histogram_test(data):
     ax.set_xticks(np.arange(24))
     plt.title(hist_title)
     st.pyplot(fig)
-    # hist = np.histogram(hist_data['datetimetime'].dt.hour, bins=24, range=(0,24))[0]
-    # st.bar_chart(np.histogram(hist_data['datetimetime'].dt.hour, bins=24, range=(0,24))[0])
 
 
 def map(data):
@@ -121,35 +113,6 @@ def map(data):
     st.pydeck_chart(nyc_map)
 
 
-# histogram to see the number of crashes within a time frame
-def histogram(file):
-    hour = st.slider('Select Hour',0,0, 23,1)
-    st.markdown("### **Interactive Histogram**")
-    st.sidebar.markdown("#### **Please select your upper and lower bound hours**")
-    time_min = st.sidebar.slider("Lower Bound Hour:", 0, 0, 24, 1)
-    time_max = st.sidebar.slider("Upper Bound Hour:", 0, 0, 24, 1)
-    hourdf = file[(file.time >= time_min) & (file.time <= time_max)]
-    count = hourdf['unique key'].count()
-    max = file['unique key'].max()
-    percentage = str(round(count / max * 100, 2))
-    hist_title = f"Percentage of Crashes Between the Hours {time_min} and {time_max} ({percentage}%)"
-    rist = file['time'].tolist()
-    arr = np.array(rist)
-    num = 24
-    bins = list(range(num + 1))
-    fig, ax = plt.subplots()
-    N, bins, patches = ax.hist(arr, bins=bins, color='firebrick', EdgeColor='black')
-    for i in range(time_min, time_max):
-        patches[i].set_facecolor('midnightblue')
-    plt.xlim(-1, 25)
-    plt.xlabel("Hour of the Day")
-    plt.ylabel("Number of Crashes")
-    plt.title(hist_title)
-    st.pyplot(fig)
-
-
-# chart looking at the number of people injured
-# pie chart counting the type of vehicle or borough
 hide_streamlit_style = """
             <style>
             footer:after {
@@ -170,25 +133,27 @@ def title():
     st.title("NYC Vehicle Crash Data")
 
 
-def sidebar():
-    st.sidebar.title("Selector")
-    st.sidebar.slider("Set city zoom", 0, 5, 10)
-    # st.sidebar.selectbox("Select a chart type:", ("Bar Chart", "Pie Chart", "Histogram"))
-    # st.sidebar.radio("Person's affected", ("Injured", "Killed"))
-
-
 def main():
     title()
-    sidebar()
     df = load_data(FILE)
     if st.checkbox('View Raw Data?'):
         st.write(df)
-    histogram_test(df)
-    stuff = pd.pivot_table(df, index=["borough"], values=["persons injured"], aggfunc=[np.average], fill_value=0)
-    st.map(df)
-    st.write(stuff)
-    # bar(df)
-    # line_chart(df)
+    st.sidebar.title("Selector")
+    visualization = st.sidebar.selectbox("Select a chart type:", ("Select One", "Bar Chart", "Histogram", "Line Chart", "Map"))
+    if visualization == "Bar Chart":
+        bar(df)
+    elif visualization == "Line Chart":
+        line_chart(df)
+    elif visualization == "Histogram":
+        histogram_test(df)
+    elif visualization == "Map":
+        st.map(df)
+    else:
+        histogram_test(df)
+        st.map(df)
+        bar(df)
+        line_chart(df['persons injured'])
 
 
 main()
+
