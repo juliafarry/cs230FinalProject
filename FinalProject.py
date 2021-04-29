@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import streamlit as st
 import pydeck as pdk
+import seaborn as sb
 
 FILE = "nyc_crash.csv"
 
@@ -42,27 +43,32 @@ def load_data(file):
     lower_case = lambda x: str(x).lower()
     df.rename(lower_case, axis='columns', inplace=True)
     df = df.fillna(0)
-    print(f"This data set has {df.shape[0]} rows.")
     sample = df.sample(n=1000)
     sample['datetime'] = pd.to_datetime(sample['date'])
     sample['datetime'] = sample['datetime'].dt.month
     sample['datetime'] = pd.to_numeric(sample['datetime'])
     sample['datetimetime'] = pd.to_datetime(sample['time'])
-    print(f"The sample data set has {sample.shape[0]} rows.")
-    print(sample.info())
     return sample
 
 
 # bar chart taking the average people injured in each borough based on the pivot table
 def bar(data):
+    dict = {}
+    plt.
     st.subheader("**Pivot Table of Average Injuries**")
-    stuff = pd.pivot_table(data, index=["borough"], values=["persons injured"], aggfunc=[np.average], fill_value=0)
-    st.write(stuff)
+    piv = pd.pivot_table(data, index=["borough"], values=["persons injured"], aggfunc=[np.average], fill_value=0)
+    data = data[data['persons injured'] != 0]
+    st.write(piv)
     st.subheader("**Bar Chart of Average People Injured in Vehicles From Each Borough**")
-    boroughs = ['bronx', 'brooklyn','manhattan', 'queens', 'staten island']
-
-    st.bar_chart(boroughs)
-
+    boroughs = ['BRONX', 'BROOKLYN','MANHATTAN', 'QUEENS', 'STATEN ISLAND']
+    # st.bar_chart(boroughs, index=boroughs)
+    print(type(data[data['borough'] == 'BRONX']))
+    for i in boroughs:
+        counter = len(data[data['borough'] == i])
+        dict[i] = counter
+    print(dict)
+    plt.bar(range(len(dict)), dict.values(), align='center')
+    st.pyplot()
 
 # line chart of the number of vehicles involved in the crash
 def line_chart(data):
@@ -89,7 +95,6 @@ def histogram_test(data):
     hist_title = f"Time of Day Histogram for the month of {month}"
     rist = hist_data['datetimetime'].dt.hour.tolist()
     arr = np.array(rist)
-    print(arr)
     num = 24
     bins = list(range(num + 1))
     fig, ax = plt.subplots()
@@ -100,33 +105,22 @@ def histogram_test(data):
     ax.set_xticks(np.arange(24))
     plt.title(hist_title)
     st.pyplot(fig)
+    # hist = np.histogram(hist_data['datetimetime'].dt.hour, bins=24, range=(0,24))[0]
+    # st.bar_chart(np.histogram(hist_data['datetimetime'].dt.hour, bins=24, range=(0,24))[0])
 
 
 def map(data):
     st.markdown("### **Map of Crashes in NYC**")
     loc = []
     for i in range(len(data)):
-        loc.append([data[i][0]], data[i][5], data[i][6])
+        loc.append([data[i][0], data[i][5], data[i][6]])
     nyc_map = pd.DataFrame(loc, columns=['Unique Key', 'Latitude', 'Longitude'])
-    view_state = pdk.ViewState(latitude =nyc_map['Latitude'].mean(), longitude = nyc_map['longitude'].mean(), zoom = 4, min_zoom=1, max_zoom=20)
+    view_state = pdk.ViewState(latitude =40.7306, longitude = -73.9352, zoom = 4, min_zoom=1, max_zoom=20)
     layer = pdk.Layer('Scatterplotlayer', nyc_map, pickable=True, get_position=['Longitude', 'Latitude'], get_radius=5000, get_color=[0, 255, 255])
     nyc_map = pdk.Deck(map_style = 'light', initial_view_state=view_state, layers=[layer])
     st.pydeck_chart(nyc_map)
 
 
-hide_streamlit_style = """
-            <style>
-            footer:after {
-                content:'by https://gregoirejan.github.io / Using frost.met.no API';
-                visibility: visible;
-                display: block;
-                position: relative;
-                #background-color: red;
-                padding: 5px;
-                top: 2px;
-            }
-            </style>
-            """
 
 
 # Function adds a title to the project and returns no value
@@ -154,6 +148,15 @@ def main():
         st.map(df)
         bar(df)
         # line_chart(df)
+    """histogram_test(df)
+    borough_piv = pd.pivot_table(df, index=["borough"], values=["persons injured"], aggfunc=[np.average], fill_value=0)
+    # map(df)
+    # st.map(df)
+    st.write(borough_piv)
+    testy = df.loc[[]]
+    print(testy)
+    # bar(df)
+    # line_chart(df)"""
 
 
 main()
