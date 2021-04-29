@@ -82,8 +82,6 @@ vehicle_factor = ["ACCELERATOR DEFECTIVE" "AGGRESSIVE DRIVING/ROAD RAGE", "ALCOH
                   ]
 
 
-# pivot table that will compare the average people injured from each borough
-
 def histogram_test(data):
     global MONTHS
     month_list = list(MONTHS.values())
@@ -107,7 +105,7 @@ def histogram_test(data):
     plt.title(hist_title)
     st.bar_chart(np.histogram(hist_data[hist_data['datetime'].dt.hour], bins=24, range=(0,24))[0])
     # st.pyplot(fig)
-    print("hello")
+
 
 # histogram to see the number of crashes within a time frame
 def histogram(file):
@@ -163,6 +161,8 @@ def title():
     st.title("NYC Vehicle Crash Data")
 
 
+st.sidebar.title("Selector")
+
 def main():
     title()
     df = load_data(FILE)
@@ -174,5 +174,3 @@ def main():
 
 main()
 
-# streamlit run C:/Users/Julia Farry/PycharmProjects/cs230FinalProject/FinalProject.py
-# streamlit run C:/Users/baxte/Documents/Sophomore Year/Spring/CS 230/cs230FinalProject/FinalProject.py
