@@ -105,7 +105,7 @@ def histogram_test(data):
     plt.title(hist_title)
 
 
-def map():
+def map(lat, long):
     st.bar_chart(np.histogram(hist_data[hist_data['datetime'].dt.hour], bins=24, range=(0,24))[0])
     view_state = pdk.ViewState(latitude = 40.7128, longitude = 74.0060)
     map = pdk.Deck(initial_view_state=view_state)
