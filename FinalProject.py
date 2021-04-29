@@ -97,15 +97,14 @@ def histogram_test(data):
 
 
 def map(data):
-    month_list = list(MONTHS.values())
-    month_nums = list(MONTHS.keys())
-    month = st.selectbox('Select Month', month_list)
-    position = month_list.index(month)
-    num = month_nums[position] - 1
-    map_data = data[data['datetime'].dt.month == num]
-    st.bar_chart(np.histogram(map_data[map_data['datetime'].dt.hour], bins=24, range=(0,24))[0])
-    view_state = pdk.ViewState(latitude = 40.7128, longitude = 74.0060, zoom = 4)
-    map = pdk.Deck(initial_view_state=view_state)
+    st.markdown("### **Map of Crashes in NYC**")
+    loc = []
+    for i in range(len(data)):
+        loc.append([data[i][0]], data[i][5], data[i][6])
+    nyc_map = pd.DataFrame(loc, columns=['Unique Key', 'Latitude', 'Longitude'])
+    view_state = pdk.ViewState(latitude = 40.7128.mean(), longitude = 74.0060.mean(), zoom = 4, min_zoom=1, max_zoom=20)
+    layer = pdk.Layer('Scatterplotlayer', map, pickable=True, get_position=['Longitue', 'Latitude'], get_radius=5000, get_color=[0, 255, 255])
+    nyc_map = pdk.Deck(initial_view_state=view_state)
     st.pydeck_chart(map)
 
 
